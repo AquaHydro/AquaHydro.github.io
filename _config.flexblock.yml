@@ -46,7 +46,7 @@ comments:
     website: yiliang-me
     error: 如果你看不到评论，那么就真的看不到评论 w(゜Д゜)w
   waline:
-    serverURL: https://waline-cjjtchwsh-aquahydros-projects.vercel.app/
+    serverURL: https://vercel.yiliang.me/
 
 # dplayer 视频播放
 # docs: http://dplayer.js.org/#/zh-Hans/
