@@ -48,3 +48,26 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Refresh Tencent Cloud CDN
+        env:
+          SECRET_ID: ${{ secrets.SECRETID }}
+          SECRET_KEY: ${{ secrets.SECRETKEY }}
+          CDN_DOMAIN: www.yiliang.me.cdn.dnsv1.com  # 这里填入你的 CDN 加速域名
+        run: |
+          TIMESTAMP=$(date +%s)
+          NONCE=$(od -vAn -N4 -tu4 < /dev/urandom)
+          SIGNATURE=$(echo -n "POSTcdn.tencentcloudapi.com/cdn/${SECRET_ID}/${TIMESTAMP}/cdn/tc3_request" | openssl dgst -sha256 -hmac "${SECRET_KEY}" | sed 's/^.* //')
+          
+          curl -X POST https://cdn.tencentcloudapi.com \
+          -H "Content-Type: application/json" \
+          -d '{
+            "Action": "PurgePathCache",
+            "Version": "2018-06-06",
+            "SecretId": "'"${SECRET_ID}"'",
+            "Timestamp": '"${TIMESTAMP}"',
+            "Nonce": '"${NONCE}"',
+            "SignatureMethod": "HmacSHA256",
+            "Paths": ["https://'"${CDN_DOMAIN}"'/*"],
+            "FlushType": "flush"
+          }' \
+          -H "Authorization: HMAC-SHA256 Credential=${SECRET_ID}/${TIMESTAMP}/cdn/tc3_request, SignedHeaders=content-type;host, Signature=${SIGNATURE}"
