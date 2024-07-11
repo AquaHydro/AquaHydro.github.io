@@ -52,22 +52,31 @@ jobs:
         env:
           SECRET_ID: ${{ secrets.SECRETID }}
           SECRET_KEY: ${{ secrets.SECRETKEY }}
-          CDN_DOMAIN: www.yiliang.me.cdn.dnsv1.com  # 这里填入你的 CDN 加速域名
+          CDN_DOMAIN: your-cdn-domain.com  # 这里填入你的 CDN 加速域名
         run: |
           TIMESTAMP=$(date +%s)
           NONCE=$(od -vAn -N4 -tu4 < /dev/urandom)
-          SIGNATURE=$(echo -n "POSTcdn.tencentcloudapi.com/cdn/${SECRET_ID}/${TIMESTAMP}/cdn/tc3_request" | openssl dgst -sha256 -hmac "${SECRET_KEY}" | sed 's/^.* //')
+          HOST="cdn.tencentcloudapi.com"
+          ACTION="PurgePathCache"
+          VERSION="2018-06-06"
+          SERVICE="cdn"
+          HTTP_REQUEST_METHOD="POST"
           
-          curl -X POST https://cdn.tencentcloudapi.com \
+          # 生成签名字符串
+          CANONICAL_REQUEST="${HTTP_REQUEST_METHOD}\n/\n\ncontent-type:application/json\nhost:${HOST}\n\ncontent-type;host\n$(echo -n "{\"Action\":\"${ACTION}\",\"Version\":\"${VERSION}\",\"SecretId\":\"${SECRET_ID}\",\"Timestamp\":${TIMESTAMP},\"Nonce\":${NONCE},\"Paths\":[\"https://${CDN_DOMAIN}/*\"],\"FlushType\":\"flush\"}" | openssl dgst -sha256 -hex | sed 's/^.* //')"
+          
+          STRING_TO_SIGN="TC3-HMAC-SHA256\n${TIMESTAMP}\n${TIMESTAMP}/cdn/tc3_request\n$(echo -n "${CANONICAL_REQUEST}" | openssl dgst -sha256 -hex | sed 's/^.* //')"
+          
+          SECRET_DATE=$(echo -n "${TIMESTAMP}" | openssl dgst -sha256 -hmac "TC3${SECRET_KEY}" | sed 's/^.* //')
+          SECRET_SERVICE=$(echo -n "cdn" | openssl dgst -sha256 -hmac "${SECRET_DATE}" | sed 's/^.* //')
+          SECRET_SIGNING=$(echo -n "tc3_request" | openssl dgst -sha256 -hmac "${SECRET_SERVICE}" | sed 's/^.* //')
+          
+          SIGNATURE=$(echo -n "${STRING_TO_SIGN}" | openssl dgst -sha256 -hmac "${SECRET_SIGNING}" | sed 's/^.* //')
+          
+          curl -X POST "https://${HOST}" \
           -H "Content-Type: application/json" \
-          -d '{
-            "Action": "PurgePathCache",
-            "Version": "2018-06-06",
-            "SecretId": "'"${SECRET_ID}"'",
-            "Timestamp": '"${TIMESTAMP}"',
-            "Nonce": '"${NONCE}"',
-            "SignatureMethod": "HmacSHA256",
-            "Paths": ["https://'"${CDN_DOMAIN}"'/*"],
-            "FlushType": "flush"
-          }' \
-          -H "Authorization: HMAC-SHA256 Credential=${SECRET_ID}/${TIMESTAMP}/cdn/tc3_request, SignedHeaders=content-type;host, Signature=${SIGNATURE}"
+          -H "Host: ${HOST}" \
+          -H "X-TC-Action: ${ACTION}" \
+          -H "X-TC-Timestamp: ${TIMESTAMP}" \
+          -H "X-TC-Version: ${VERSION}" \
+          -H "Authorization: TC3-HMAC-SHA256 Credential=${SECRET_ID}/${TIMESTAMP}/cdn/tc3_request, SignedHeaders=content-type;host, Signature=${SIGNATURE}" \
