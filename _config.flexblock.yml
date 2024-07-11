@@ -46,7 +46,7 @@ comments:
     website: yiliang-me
     error: 如果你看不到评论，那么就真的看不到评论 w(゜Д゜)w
   waline:
-    serverURL: https://vercel.yiliang.me/
+    serverURL: https://vercel.ilikestudy.cn/
 
 # dplayer 视频播放
 # docs: http://dplayer.js.org/#/zh-Hans/
@@ -82,7 +82,7 @@ polyfill:
 jsdelivr_mirror: 
 
 # 国内备案信息
-beian: 
+beian: 桂ICP备17007944号
 
 # 谷歌分析
 google_analytics: 

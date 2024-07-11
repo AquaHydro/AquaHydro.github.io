@@ -52,7 +52,7 @@ jobs:
         env:
           SECRET_ID: ${{ secrets.SECRETID }}
           SECRET_KEY: ${{ secrets.SECRETKEY }}
-          DOMAIN_Path: 'https://www.yiliang.me/*'
+          DOMAIN_Path: 'https://www.ilikestudy.cn/*'
         run: |
           secret_id="${SECRET_ID}"
           secret_key="${SECRET_KEY}"
