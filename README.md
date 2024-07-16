@@ -1,3 +1,3 @@
 # AquaHydro.github.io
 
-visiting: [https://ilikestudy.cn](https://ilikestudy.cn)
+visiting: [https://www.ilikestudy.cn](https://www.ilikestudy.cn)
