@@ -1,3 +1,12 @@
+---
+title: api接口的一些设计原则和最佳实践
+date: 2024-07-21 08:30:59
+categories: '技术'
+tags: '接口'
+cover: https://ilikestudy.cn/oss/2024%2F07%2F21%2F-71ca5085b8f4317e07b01da0aeaa7da2--aaee8f.webp
+---
+
+
 ### 1. **单一职责原则（Single Responsibility Principle, SRP）**
 
 - 每个模块或函数应该只负责一件事情。新增接口的职责就是接收新数据并插入数据库，而不是处理自动生成的字段。
