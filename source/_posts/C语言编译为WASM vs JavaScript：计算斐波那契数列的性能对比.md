@@ -8,6 +8,8 @@ cover: https://ilikestudy.cn/oss/2024%2F07%2F24%2F20-9a79f14ca3e3bc00713ed76546f
 
 > 在现代Web开发中，性能优化是一个重要的议题。WebAssembly（WASM）作为一种新兴的技术，为Web应用带来了显著的性能提升。**在需要高性能计算的Web应用程序，例如音视频、协作冲突中起着非常重要的作用。**本文将探讨C语言编译为WASM在计算斐波那契数列时相较于JavaScript的性能优势。
 
+![](https://ilikestudy.cn/oss/2024%2F07%2F26%2F-02c46aee9974e0cb789073d42c0abf9a--eca445.png)
+
 ## 什么是WebAssembly？
 
 WebAssembly（WASM）是一种新的二进制格式，可以在现代Web浏览器中高效地运行。这种格式可以将C、C++、Rust等编译型语言编译为高效的字节码，然后在浏览器中执行，从而提升了计算性能。
