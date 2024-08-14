@@ -84,6 +84,9 @@ jsdelivr_mirror:
 # 国内备案信息
 beian: 桂ICP备17007944号
 
+# 预加载 Speculation Rules API
+speculation_rules: true
+
 # 谷歌分析
 google_analytics: 
 # gauges分析
@@ -94,7 +97,6 @@ baidu_analytics:
 tencent_analytics: 
 # 站点ico
 favicon: /favicon.ico
-
 
 # Social Icon
 social_icon:
