@@ -21,7 +21,7 @@ cover: https://ilikestudy.cn/oss/2024%2F07%2F11%2F-70d89a15795f5c1ce77822529c0fd
 
 > **注:** 内存泄漏问题也可以通过堆快照定位。
 
-由于账号封禁问题，历史的 PR 请求和 Issues 都已经 404，代码变更可以 [点此查看](https://github.com/dream-num/univer/commit/f21d8830859625141b1794a636a27ad77d1c0026)。
+PR 请求可以 [点此查看](https://github.com/dream-num/univer/pull/2631)。
 
 ## 耗时原因分析:
 
