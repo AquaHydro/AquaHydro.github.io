@@ -4,6 +4,8 @@ date: 2024-07-11 21:05:59
 categories: '技术'
 tags: '性能优化'
 cover: https://blogr2.yiliang.app/2024/07/11/-70d89a15795f5c1ce77822529c0fd259--81c8e1.webp
+summary: |
+  <p>本文深入解析了对 univer-sheet 复制粘贴逻辑的性能优化实践。针对原方案中因频繁调用 getComputedStyle 导致的强制重排、主线程阻塞及内存泄漏问题，团队进行了核心重构。优化方案摒弃了传统的 DOMParser 和挂载 DOM 树的方式，转而采用深度优先遍历算法模拟样式计算，并将样式存储于 Map 中。该改进不仅将粘贴解析耗时从 27.5 秒大幅缩短至 2.68 秒，还通过规范化资源回收机制彻底解决了内存泄漏，显著提升了表格组件的渲染性能与稳定性。</p>
 ---
 > **注:** 本文基于 [univer-sheet](https://github.com/dream-num/univer) 源码，对其复制粘贴解析逻辑进行核心优化解读。
 

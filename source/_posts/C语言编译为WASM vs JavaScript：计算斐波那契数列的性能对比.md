@@ -4,6 +4,8 @@ date: 2024-07-24 08:30:59
 categories: '技术'
 tags: '性能'
 cover: https://blogr2.yiliang.app/2024/07/24/20-9a79f14ca3e3bc00713ed76546f05d7c-26ac8c.webp
+summary: |
+  <p>本文探讨了WebAssembly（WASM）技术在现代Web开发中的性能优势。通过对比C语言编译为WASM与原生JavaScript在计算斐波那契数列时的表现，文章展示了WASM如何利用高效的二进制格式提升计算密集型任务的执行效率。文中不仅介绍了WASM的基本概念，还提供了具体的代码示例及编译流程，旨在说明WASM在处理音视频、复杂计算等高性能需求场景中，相较于JavaScript具有显著的性能提升，是优化Web应用性能的重要手段。</p>
 ---
 
 > 在现代Web开发中，性能优化是一个重要的议题。WebAssembly（WASM）作为一种新兴的技术，为Web应用带来了显著的性能提升。**在需要高性能计算的Web应用程序，例如音视频、协作冲突中起着非常重要的作用。**本文将探讨C语言编译为WASM在计算斐波那契数列时相较于JavaScript的性能优势。

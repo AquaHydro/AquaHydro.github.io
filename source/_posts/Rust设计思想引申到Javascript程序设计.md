@@ -4,6 +4,8 @@ date: 2024-10-21 22:30:00
 categories: '技术'
 tags: ['Rust', 'JavaScript', '编程思想']
 cover: https://blogr2.yiliang.app/2024/10/22/14-e3520c449470723dd3a29220cf1d81da-70ad48.png
+summary: |
+  <p>本文探讨了如何将Rust语言的设计理念融入JavaScript开发，以提升代码的可靠性与性能。核心借鉴点包括：通过明确资源管理借鉴所有权思想；利用不可变数据结构（如Immutable.js）减少状态复杂性；引入TypeScript增强类型安全性；以及通过模式匹配优化控制流。此外，文章指出JavaScript可借助ESLint、Web Workers等工具实现类似Rust的安全性、高效内存管理与并发处理。通过采纳这些设计哲学，开发者能够编写出更健壮、易于维护的现代JavaScript应用。</p>
 ---
 Rust是一门以安全性和性能著称的系统编程语言，其设计思想对JavaScript程序设计有着深远的启示。本文将探讨如何将Rust的设计理念应用到JavaScript开发中，以提升代码的可靠性和效率。
 
