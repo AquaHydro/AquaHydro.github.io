@@ -1,0 +1,11 @@
+name = "gemini-summarize"
+main = "src/index.ts"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+# GEMINI_API_KEY is set as a secret via: wrangler secret put GEMINI_API_KEY
+
+[[routes]]
+pattern = "gemini.yiliang.app/*"
+zone_name = "yiliang.app"
