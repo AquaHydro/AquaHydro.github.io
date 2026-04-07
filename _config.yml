@@ -113,3 +113,8 @@ feed:
   type: atom
   path: atom.xml
   limit: false
+
+# Sitemap
+sitemap:
+  path: sitemap.xml
+  rel: false

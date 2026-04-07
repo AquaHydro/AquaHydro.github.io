@@ -1,5 +1,8 @@
-interface Env {
+import { DurableObject } from 'cloudflare:workers';
+
+export interface Env {
   GEMINI_API_KEY: string;
+  GEMINI_PROXY: DurableObjectNamespace;
 }
 
 const ALLOWED_ORIGINS = [
@@ -12,8 +15,17 @@ const GEMINI_MODEL = 'gemini-3.1-flash-lite-preview';
 const PROMPT_PREFIX =
   '请使用简体中文为以下内容生成简短的概述,不要使用markdown格式,有富文本请使用html格式进行输出,300字以内：';
 
+// ── Durable Object (runs in wnam / US West) ──────────────────────────────────
+export class GeminiProxy extends DurableObject<Env> {
+  async fetch(request: Request): Promise<Response> {
+    const { content } = (await request.json()) as { content: string };
+    return streamFromGemini(content, this.env.GEMINI_API_KEY);
+  }
+}
+
+// ── Main Worker ───────────────────────────────────────────────────────────────
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, _ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     const origin = request.headers.get('Origin') ?? '';
 
@@ -55,7 +67,24 @@ export default {
         });
       }
 
-      return streamGeminiResponse(content, env.GEMINI_API_KEY, corsHeaders);
+      // Route Gemini call through a US-based Durable Object to bypass HK geo-block
+      const id = env.GEMINI_PROXY.idFromName('singleton');
+      const stub = env.GEMINI_PROXY.get(id, { locationHint: 'wnam' });
+      const doRes = await stub.fetch('https://do/generate', {
+        method: 'POST',
+        body: JSON.stringify({ content }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      return new Response(doRes.body, {
+        status: doRes.status,
+        headers: {
+          ...corsHeaders,
+          'Content-Type': 'text/plain; charset=utf-8',
+          'Cache-Control': 'no-cache',
+          'X-Content-Type-Options': 'nosniff',
+        },
+      });
     } catch (e) {
       return new Response('Internal error: ' + (e as Error).message, {
         status: 500,
@@ -65,14 +94,11 @@ export default {
   },
 };
 
+// ── Helpers ───────────────────────────────────────────────────────────────────
 async function extractSecondSectionText(html: string): Promise<string> {
   let sectionIndex = 0;
   const textParts: string[] = [];
   let capturing = false;
-
-  const response = new Response(html, {
-    headers: { 'Content-Type': 'text/html; charset=utf-8' },
-  });
 
   await new HTMLRewriter()
     .on('section', {
@@ -87,23 +113,19 @@ async function extractSecondSectionText(html: string): Promise<string> {
         }
       },
     })
-    .transform(response)
+    .transform(new Response(html, { headers: { 'Content-Type': 'text/html; charset=utf-8' } }))
     .text();
 
   return textParts.join('').trim();
 }
 
-function streamGeminiResponse(
-  content: string,
-  apiKey: string,
-  corsHeaders: Record<string, string>,
-): Response {
+function streamFromGemini(content: string, apiKey: string): Response {
   const prompt = PROMPT_PREFIX + content;
   const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:streamGenerateContent?alt=sse&key=${apiKey}`;
 
   const { readable, writable } = new TransformStream<Uint8Array, Uint8Array>();
 
-  (async () => {
+  const pump = async () => {
     const writer = writable.getWriter();
     const encoder = new TextEncoder();
     let buffer = '';
@@ -112,13 +134,12 @@ function streamGeminiResponse(
       const geminiRes = await fetch(geminiUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-        }),
+        body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
       });
 
       if (!geminiRes.ok || !geminiRes.body) {
-        await writer.write(encoder.encode('Gemini API error'));
+        const errBody = await geminiRes.text().catch(() => '(no body)');
+        await writer.write(encoder.encode(`Gemini API error ${geminiRes.status}: ${errBody}`));
         return;
       }
 
@@ -151,14 +172,12 @@ function streamGeminiResponse(
     } finally {
       await writer.close();
     }
-  })();
+  };
+
+  // DO fetch handler is synchronous — pump runs in the same context, no floating promise
+  void pump();
 
   return new Response(readable, {
-    headers: {
-      ...corsHeaders,
-      'Content-Type': 'text/plain; charset=utf-8',
-      'Cache-Control': 'no-cache',
-      'X-Content-Type-Options': 'nosniff',
-    },
+    headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-cache' },
   });
 }

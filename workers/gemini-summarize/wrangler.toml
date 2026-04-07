@@ -6,6 +6,14 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 # GEMINI_API_KEY is set as a secret via: wrangler secret put GEMINI_API_KEY
 
+[[durable_objects.bindings]]
+name = "GEMINI_PROXY"
+class_name = "GeminiProxy"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["GeminiProxy"]
+
 [[routes]]
-pattern = "gemini.yiliang.app/*"
-zone_name = "yiliang.app"
+pattern = "gemini.yiliang.app"
+custom_domain = true

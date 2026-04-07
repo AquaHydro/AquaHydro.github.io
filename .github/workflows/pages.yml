@@ -8,22 +8,24 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
     permissions:
-      contents: read
+      contents: write   # needed to push AI summaries back to the repo
       deployments: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           submodules: recursive
 
-      - name: Use Node.js 20
-        uses: actions/setup-node@v4
+      - name: Use Node.js 24
+        uses: actions/setup-node@v6
         with:
-          node-version: '20'
+          node-version: '24'
 
       - name: Cache NPM dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: ${{ runner.OS }}-npm-cache
@@ -33,6 +35,30 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      # ── AI Summarization ──────────────────────────────────────────────────────
+      # Calls Gemini API for every post that lacks a `summary` frontmatter field.
+      # Posts that already have a summary are skipped (idempotent).
+      # The step is a no-op when GEMINI_API_KEY is not configured.
+      - name: Summarize new posts
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: node scripts/summarize.mjs
+
+      # Commit generated summaries so future builds skip them (no re-calling the API).
+      # [skip ci] prevents this commit from triggering another workflow run.
+      - name: Commit summaries back to repo
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet source/_posts/; then
+            echo "No new summaries — nothing to commit."
+          else
+            git add source/_posts/
+            git commit -m "chore: add AI summaries [skip ci]"
+            git push
+          fi
+
+      # ── Build & Deploy ────────────────────────────────────────────────────────
       - name: Build
         run: npm run build
 
