@@ -3,12 +3,12 @@ title: C语言编译为WASM vs JavaScript：计算斐波那契数列的性能对
 date: 2024-07-24 08:30:59
 categories: '技术'
 tags: '性能'
-cover: https://ilikestudy.cn/oss/2024%2F07%2F24%2F20-9a79f14ca3e3bc00713ed76546f05d7c-26ac8c.webp
+cover: https://blogr2.yiliang.app/2024/07/24/20-9a79f14ca3e3bc00713ed76546f05d7c-26ac8c.webp
 ---
 
 > 在现代Web开发中，性能优化是一个重要的议题。WebAssembly（WASM）作为一种新兴的技术，为Web应用带来了显著的性能提升。**在需要高性能计算的Web应用程序，例如音视频、协作冲突中起着非常重要的作用。**本文将探讨C语言编译为WASM在计算斐波那契数列时相较于JavaScript的性能优势。
 
-![](https://ilikestudy.cn/oss/2024%2F07%2F26%2F-02c46aee9974e0cb789073d42c0abf9a--eca445.png)
+![](https://blogr2.yiliang.app/2024/07/26/-02c46aee9974e0cb789073d42c0abf9a--eca445.png)
 
 ## 什么是WebAssembly？
 
@@ -100,7 +100,7 @@ emcc -O3 -o fibonacci.js -s EXPORTED_FUNCTIONS='["_fibonacci"]' fibonacci.c
 ```
 性能对比：
 
-![](https://ilikestudy.cn/oss/2024%2F07%2F24%2F20-0734f478e0ecdabf2d470a841208277d-853ba9.webp)
+![](https://blogr2.yiliang.app/2024/07/24/20-0734f478e0ecdabf2d470a841208277d-853ba9.webp)
 
 ## 源码参考
 - [fib-wasm](https://github.com/AquaHydro/code-examples/tree/main/fib-wasm)

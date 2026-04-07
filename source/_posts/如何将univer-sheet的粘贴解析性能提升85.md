@@ -3,7 +3,7 @@ title: 如何将 univer-sheet 的粘贴解析性能提升 85%
 date: 2024-07-11 21:05:59
 categories: '技术'
 tags: '性能优化'
-cover: https://ilikestudy.cn/oss/2024%2F07%2F11%2F-70d89a15795f5c1ce77822529c0fd259--81c8e1.webp
+cover: https://blogr2.yiliang.app/2024/07/11/-70d89a15795f5c1ce77822529c0fd259--81c8e1.webp
 ---
 > **注:** 本文基于 [univer-sheet](https://github.com/dream-num/univer) 源码，对其复制粘贴解析逻辑进行核心优化解读。
 
@@ -11,11 +11,11 @@ cover: https://ilikestudy.cn/oss/2024%2F07%2F11%2F-70d89a15795f5c1ce77822529c0fd
 
 - **变更前:**
   
-  ![](https://ilikestudy.cn/oss/2024%2F07%2F11%2F-bcfe20cc2b851df896bc62c5c98a63b4--236cb6.webp)
+  ![](https://blogr2.yiliang.app/2024/07/11/-bcfe20cc2b851df896bc62c5c98a63b4--236cb6.webp)
 
 - **变更后:**
 
-  ![](https://ilikestudy.cn/oss/2024%2F07%2F11%2F-d1eb6c86878a076da8d0256fa2106115--4e8ed1.webp)
+  ![](https://blogr2.yiliang.app/2024/07/11/-d1eb6c86878a076da8d0256fa2106115--4e8ed1.webp)
 
 由上图可以看到在提交变更之前，粘贴解析长任务耗时 27.5 秒并且内存没有得到回收，出现了内存泄漏问题。在变更之后，耗时仅需要 2.68 秒，对应的内存也得到释放。
 
@@ -25,7 +25,7 @@ PR 请求可以 [点此查看](https://github.com/dream-num/univer/pull/2631)。
 
 ## 耗时原因分析:
 
-![](https://ilikestudy.cn/oss/2024%2F07%2F11%2F-f3fb909ef8b68491b23d88017135f919--bc1c2a.webp)
+![](https://blogr2.yiliang.app/2024/07/11/-f3fb909ef8b68491b23d88017135f919--bc1c2a.webp)
 
 通过开发者工具结合源码分析，我们能发现 `windows.getComputedStyle().getPropertyValue` 出现了大量耗时的情况。
 

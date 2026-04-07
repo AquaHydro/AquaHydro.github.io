@@ -3,7 +3,7 @@ title: api接口的一些设计原则和最佳实践
 date: 2024-07-21 08:30:59
 categories: '技术'
 tags: '接口'
-cover: https://ilikestudy.cn/oss/2024%2F07%2F21%2F-71ca5085b8f4317e07b01da0aeaa7da2--aaee8f.webp
+cover: https://blogr2.yiliang.app/2024/07/21/-71ca5085b8f4317e07b01da0aeaa7da2--aaee8f.webp
 ---
 
 
@@ -42,21 +42,21 @@ cover: https://ilikestudy.cn/oss/2024%2F07%2F21%2F-71ca5085b8f4317e07b01da0aeaa7
 
 ####  从请求体上下文`ctx.user`中只取该接口控制器`AuthController`需要的字段数据，其中创建上下文的中间件`verifyAuth`可以应用在不同的路由/业务接口中。
 
-![image-20240721081744300](https://ilikestudy.cn/oss/image-20240721081744300.png)
+![image-20240721081744300](https://blogr2.yiliang.app/image-20240721081744300.png)
 
-![image-20240721081613510](https://ilikestudy.cn/oss/image-20240721081613510.png)
+![image-20240721081613510](https://blogr2.yiliang.app/image-20240721081613510.png)
 
-![image-20240721075318479](https://ilikestudy.cn/oss/image-20240721075318479.png)
+![image-20240721075318479](https://blogr2.yiliang.app/image-20240721075318479.png)
 
 #### cos的上传需要返回https链接，符合高版本chrome浏览器的安全策略以及最佳做法
 
 
 
-![image-20240721082223721](https://ilikestudy.cn/oss/image-20240721082223721.png)
+![image-20240721082223721](https://blogr2.yiliang.app/image-20240721082223721.png)
 
 
 
-![image-20240721082517590](https://ilikestudy.cn/oss/image-20240721082517590.png)
+![image-20240721082517590](https://blogr2.yiliang.app/image-20240721082517590.png)
 
 ### 扩展阅读
 

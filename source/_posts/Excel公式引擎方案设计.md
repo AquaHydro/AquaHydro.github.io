@@ -3,7 +3,7 @@ title: excel公式引擎方案设计
 date: 2024-07-25 15:39:32
 categories: '技术'
 tags: '业务'
-cover: https://ilikestudy.cn/oss/2024%2F07%2F25%2F15-8fa0d9072435b3db70c69733be8a4106-449b8a.webp
+cover: https://blogr2.yiliang.app/2024/07/25/15-8fa0d9072435b3db70c69733be8a4106-449b8a.webp
 ---
 ## 一、背景
 身处信息时代之中，我们最能明显感受到的一点就是密集数据大量爆发，人们积累的数据也越来越多。这些庞杂的数据出现在一起，传统使用的很多数据记录、查询、汇总工具并不能满足人们的需求。更有效的将这些大量数据处理，让计算机听懂人类需要的数据效果，从而形成更加自动化、智能的数据处理方式。
@@ -21,15 +21,15 @@ cover: https://ilikestudy.cn/oss/2024%2F07%2F25%2F15-8fa0d9072435b3db70c69733be8
 核心问题第二点：
 如图，A8单元格的字段中存在一个公式SUM(1,5.512,B1,A1)，formula记录了两个信息，其中的10是公式表达式的索引，22、23是公式表达式中包含的引用位置的索引：
 
-![](https://ilikestudy.cn/oss/2024%2F07%2F25%2F15-64bdf443fa67d94393eca8cfcdc36235-0a93aa.webp)
+![](https://blogr2.yiliang.app/2024/07/25/15-64bdf443fa67d94393eca8cfcdc36235-0a93aa.webp)
 在元数据部分可以看到对应的数据：
 
-![](https://ilikestudy.cn/oss/2024%2F07%2F25%2F15-fef5e455970bbc260f9eb6145f9cdac4-dccbd6.webp)
+![](https://blogr2.yiliang.app/2024/07/25/15-fef5e455970bbc260f9eb6145f9cdac4-dccbd6.webp)
 exprs中的是表达式的模板，如果存在两个公式表达式只有引用位置不同，那它们共用一个模板：
-![](https://ilikestudy.cn/oss/2024%2F07%2F25%2F15-d3b2f09d69d552502d71f51da9c93f34-6735f7.webp)
+![](https://blogr2.yiliang.app/2024/07/25/15-d3b2f09d69d552502d71f51da9c93f34-6735f7.webp)
 
 refs中的即是引用位置，通过相对位置进行表示：（[位置引用和公式字符串的转化关系参考这里](###公式中使用引用)）
-![](https://ilikestudy.cn/oss/2024%2F07%2F25%2F15-452ea323cd4806808f5b5681ca820f9b-11d8cf.webp)
+![](https://blogr2.yiliang.app/2024/07/25/15-452ea323cd4806808f5b5681ca820f9b-11d8cf.webp)
 
 由此可见钉钉表格完整的公式表达式由表达式模板(expres)+引用位置(refs)组合得出。
 通过单元格上formula记录的索引，找到对应的表达式模板和引用位置，就能够完整表达整个公式。
@@ -65,7 +65,7 @@ refs中的即是引用位置，通过相对位置进行表示：（[位置引用
 
 ### 公式的组成部分
 
-![](https://ilikestudy.cn/oss/2024%2F07%2F25%2F15-877e0a6a1ff4552e09f5a87d2e8b9a9a-15b8c1.webp)
+![](https://blogr2.yiliang.app/2024/07/25/15-877e0a6a1ff4552e09f5a87d2e8b9a9a-15b8c1.webp)
 
 1. 函数：PI() 函数返回 pi 值：3.142...
 2. 引用：A2 返回单元格 A2 中的值。
@@ -108,7 +108,7 @@ refs中的即是引用位置，通过相对位置进行表示：（[位置引用
 
   下例中，AVERAGE 函数将计算同一个工作簿中名为 Marketing 的工作表的 B1:B10 区域内的平均值。
 
-  ![](https://ilikestudy.cn/oss/2024%2F07%2F25%2F15-f1875f81cb589c1cde34dafb19e11c0c-4f12be.webp)
+  ![](https://blogr2.yiliang.app/2024/07/25/15-f1875f81cb589c1cde34dafb19e11c0c-4f12be.webp)
 
   1、对名为 Marketing 的工作表的引用
   2、引用 B1 到 B10 的单元格区域
@@ -120,25 +120,25 @@ refs中的即是引用位置，通过相对位置进行表示：（[位置引用
 
   复制的公式具有相对引用：
 
-  ![](https://ilikestudy.cn/oss/2024%2F07%2F25%2F15-11decd03cf733e245e56a61be6fa6862-390f7e.webp)
+  ![](https://blogr2.yiliang.app/2024/07/25/15-11decd03cf733e245e56a61be6fa6862-390f7e.webp)
 
   **绝对引用** 公式中的绝对单元格引用（如 \$A\$1）总是在特定位置引用单元格。 如果公式所在单元格的位置改变，绝对引用将保持不变。 如果多行或多列地复制或填充公式，绝对引用将不作调整。 默认情况下，新公式使用相对引用，因此您可能需要将它们转换为绝对引用。 例如，如果将单元格 B2 中的绝对引用复制或填充到单元格 B3，则该绝对引用在两个单元格中一样，都是 =\$A\$1。
 
   复制的公式具有绝对引用：
 
-  ![](https://ilikestudy.cn/oss/2024%2F07%2F25%2F15-1daefc8d644a37bf90a9e05dbb86932b-a1ff34.webp)
+  ![](https://blogr2.yiliang.app/2024/07/25/15-1daefc8d644a37bf90a9e05dbb86932b-a1ff34.webp)
 
   **混合引用** 混合引用具有绝对列和相对行或绝对行和相对列。 绝对引用列采用 \$A1、\$B1 等形式。 绝对引用行采用 A\$1、B\$1 等形式。 如果公式所在单元格的位置改变，则相对引用将改变，而绝对引用将不变。 如果多行或多列地复制或填充公式，相对引用将自动调整，而绝对引用将不作调整。 例如，如果将一个混合引用从单元格 A2 复制到 B3，它将从 =A\$1 调整到 =B\$1。
 
   复制的公式具有混合引用：
 
-  ![](https://ilikestudy.cn/oss/2024%2F07%2F25%2F15-7bf162d2ba059eda7eefea9f327bbe6d-c76b16.webp)
+  ![](https://blogr2.yiliang.app/2024/07/25/15-7bf162d2ba059eda7eefea9f327bbe6d-c76b16.webp)
 
 ### 公式的词法分析
 
-![](https://ilikestudy.cn/oss/2024%2F07%2F25%2F16-06e857276594aedc7fe2f723d8613d2a-e3c3f4.webp)
-![](https://ilikestudy.cn/oss/2024%2F07%2F25%2F16-a3be05ff2b129bba28e2151f03502986-085ca7.webp)
-![](https://ilikestudy.cn/oss/2024%2F07%2F25%2F16-edbfab0248564573d6a4b0168bd17f83-e02d78.webp)
+![](https://blogr2.yiliang.app/2024/07/25/16-06e857276594aedc7fe2f723d8613d2a-e3c3f4.webp)
+![](https://blogr2.yiliang.app/2024/07/25/16-a3be05ff2b129bba28e2151f03502986-085ca7.webp)
+![](https://blogr2.yiliang.app/2024/07/25/16-edbfab0248564573d6a4b0168bd17f83-e02d78.webp)
 
 ### 语法分析
 
@@ -221,7 +221,7 @@ expression
 ### 公式的相互依赖
 
 公式可以存在单元格引用，而被引用的单元格值可能也是由公式计算得到的，例如：
-![](https://ilikestudy.cn/oss/2024%2F07%2F25%2F16-a6bff834f810dbf5f8548003fa403ef4-3e7289.webp)
+![](https://blogr2.yiliang.app/2024/07/25/16-a6bff834f810dbf5f8548003fa403ef4-3e7289.webp)
 C3 上的公式是=SUM(C1:D1)，F3 上的公式是=SUM(F1:G1)，E6 上的公式是=SUM(C3,F3).
 
 如果我们将 C1 的值更新，依赖 C1 的 C3、依赖 C3 的 E6 需要重新计算并更新公式结果，并且根据依赖关系，必须先更新 C3 再更新 E6。
@@ -525,7 +525,7 @@ E = A + B + C + D
     { id: 'd', dep: [ 'e' ] }
 ]
 
-<img src="https://ilikestudy.cn/oss/2024%2F07%2F25%2F16-d1b63e4cb8c047a5414193c9af8d2149-63ef5c.webp" width="220" height="270" align="middle" />
+<img src="https://blogr2.yiliang.app/2024/07/25/16-d1b63e4cb8c047a5414193c9af8d2149-63ef5c.webp" width="220" height="270" align="middle" />
 
 当 B 节点数据变更之后，我们需要递归更新上游链路的所有节点。
 
