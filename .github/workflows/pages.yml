@@ -44,7 +44,7 @@ jobs:
         continue-on-error: true   # API failures must not block deployment
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: node scripts/summarize.mjs
+        run: node ci/summarize.mjs
 
       # Commit generated summaries so future builds skip them (no re-calling the API).
       # [skip ci] prevents this commit from triggering another workflow run.
