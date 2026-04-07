@@ -41,6 +41,7 @@ jobs:
       # Posts that already have a summary are skipped (idempotent).
       # The step is a no-op when GEMINI_API_KEY is not configured.
       - name: Summarize new posts
+        continue-on-error: true   # API failures must not block deployment
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: node scripts/summarize.mjs

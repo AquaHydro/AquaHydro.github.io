@@ -18,7 +18,7 @@ import { fileURLToPath } from 'node:url';
 // ── Config ────────────────────────────────────────────────────────────────────
 
 const API_KEY  = process.env.GEMINI_API_KEY;
-const MODEL    = 'gemini-2.0-flash-lite';  // stable alias; same family as worker
+const MODEL    = 'gemini-3.1-flash-lite-preview';  // same model as gemini-summarize worker
 const PROMPT   = '请使用简体中文为以下文章内容生成简短概述，不使用 Markdown 格式，使用 HTML 格式输出，300 字以内：\n\n';
 const DELAY_MS = 1200;  // ~50 RPM — well within free-tier 15 RPM per minute limit
 const MIN_CHARS = 80;   // skip stubs / drafts with little content
