@@ -3,7 +3,7 @@ title: 用 AI 写代码这一年，我把流程改成了什么样
 date: 2026-05-10 12:43:36
 categories: '技术'
 tags: ['AI', 'AI Coding', 'Agentic Engineering', 'Codex', '工程实践']
-cover: https://blogr2.yiliang.app/2026/05/10/ai-coding-practice/e9569a6e58dd62f0ec8ebb55e5dd296b.png
+cover: https://blogr2.yiliang.app/2026/05/10/ai-coding-practice/ai-coding-practice-cover-gpt-image2.png
 summary: |
   <p>这一年我把 AI 写代码从松散的 vibe coding 调整成更可交付的 agentic engineering：人负责目标、边界、架构和最终 review，AI 负责上下文检索、补丁生成、命令执行和验证。文章记录了我在老系统、浏览器插件、Flutter/Cloudflare 跨栈项目里的真实工作流，以及工具编排、事实核查和提示词约束的阶段性经验。</p>
 ---
